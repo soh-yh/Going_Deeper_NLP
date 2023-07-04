@@ -1,6 +1,6 @@
 # AIFFEL Campus Online 4th Code Peer Review Templete
 - 코더 : 소용현
-- 리뷰어 : 본인의 이름을 작성하세요.
+- 리뷰어 : 남희정
 
 
 # PRT(PeerReviewTemplate)
