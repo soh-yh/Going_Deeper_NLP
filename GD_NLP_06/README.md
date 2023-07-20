@@ -26,6 +26,39 @@
 
 # 참고 링크 및 코드 개선
 
+■ 형태소 분석기 부분을 수정하여 평가부분에 맞춰주는 작업에 공수가 많이 들어갔지만, 깔끔하게 잘 정리된 코드였습니다. :) 
+
+def translate(tokens, model, src_tokenizer, tgt_tokenizer):
+    padded_tokens = tf.keras.preprocessing.sequence.pad_sequences([tokens],
+                                                           maxlen=MAX_LEN,
+                                                           padding='post')
+    ids = []
+    output = tf.expand_dims([word_to_index['<start>']], 0)   
+    for i in range(MAX_LEN):
+        enc_padding_mask, combined_mask, dec_padding_mask = \
+        generate_masks(padded_tokens, output)
+
+        predictions, _, _, _ = model(padded_tokens, 
+                                      output,
+                                      enc_padding_mask,
+                                      combined_mask,
+                                      dec_padding_mask)
+
+        predicted_id = \
+        tf.argmax(tf.math.softmax(predictions, axis=-1)[0, -1]).numpy().item()
+
+        if word_to_index['<end>'] == predicted_id:
+#             result = tgt_tokenizer.decode_ids(ids)  
+            print(ids)
+            print([word_to_index['<start>']])
+            result = ids
+            return result
+
+        ids.append(predicted_id)
+        output = tf.concat([output, tf.expand_dims([predicted_id], 0)], axis=-1)
+#     result = tgt_tokenizer.decode_ids(ids)  
+    result = ids  
+    return result
 
 ```python
 # 코드 리뷰 시 참고한 링크가 있다면 링크와 간략한 설명을 첨부합니다.
