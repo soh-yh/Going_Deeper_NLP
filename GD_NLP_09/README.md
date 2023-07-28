@@ -1,19 +1,44 @@
 # AIFFEL Campus Online 4th Code Peer Review Templete
-- 코더 : 코더 1인의 이름을 작성하세요.
-- 리뷰어 : 본인의 이름을 작성하세요.
+- 코더 : 소용현
+- 리뷰어 : 남희정
 
 
 # PRT(PeerReviewTemplate)
 각 항목을 스스로 확인하고 토의하여 작성한 코드에 적용합니다.
 - [x] 1.코드가 정상적으로 동작하고 주어진 문제를 해결했나요?
+* 두가지 Tokenizer 사용 : PreTrainedTokenizerFast,AutoTokenizer
+```python
+    tokenizer = PreTrainedTokenizerFast.from_pretrained(model_name,
+                                                    bos_token='</s>', eos_token='</s>', unk_token='<unk>',
+                                                    pad_token='<pad>', mask_token='<mask>',
+                                                    model_max_length=512,
+                                                     padding_side="right"
+    tokenizer = AutoTokenizer.from_pretrained(model_name, bos_token='</s>', eos_token='</s>', unk_token='</s>',
+     pad_token='</s>', padding_side="right", model_max_length=512,)
+```
+* LoRa 적용
+```python
+    from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
+    peft_config = LoraConfig(
+    task_type="CAUSAL_LM", inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1)
+```
+* 모델 선언 및 학습
+  ```python
+    model = get_peft_model(model, peft_config)
+    model.print_trainable_parameters()
+    trainer.train()
+    model.save_pretrained('/aiffel/KoChatGPT/output_1_SFT')
+  ```
+  ![image](https://github.com/soh-yh/Going_Deeper_NLP/assets/88833290/91e5ec88-e91a-4f1d-af4d-6d3a1b84f486)
+
 - [ ] 2.주석을 보고 작성자의 코드가 이해되었나요?
-  > 위 항목에 대한 근거 작성 필수
+  네.. 잘 이해가 되었습니다. 
 - [ ] 3.코드가 에러를 유발할 가능성이 있나요?
-  > 위 항목에 대한 근거 작성 필수
+  가능성을 분석할 수 있도록 해 보겠습니다. 
 - [ ] 4.코드 작성자가 코드를 제대로 이해하고 작성했나요?
-  > 위 항목에 대한 근거 작성 필수
+  네. 잘 이해하고 작성되었습니다. 
 - [ ] 5.코드가 간결한가요?
-  > 위 항목에 대한 근거 작성 필수
+  네. 간결하게 잘 작성되었습니다. 
 
 # 예시
 1. 코드의 작동 방식을 주석으로 기록합니다.
